@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_bloc_v1_tutorial/bloc/bloc.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc_v1_tutorial/data/model/weather.dart';
+import 'package:flutter_bloc_v1_tutorial/data/weather_repository.dart';
+import 'package:flutter_bloc_v1_tutorial/notifiers/weather_state.dart';
+import 'package:flutter_bloc_v1_tutorial/notifiers/weather_state_notifier.dart';
+import 'package:flutter_riverpod/all.dart';
 
 import 'weather_detail_page.dart';
+
+final weatherStateNotifierProvider =
+    StateNotifierProvider<WeatherStateNotifier>(
+        (ref) => WeatherStateNotifier(FakeWeatherRepository()));
 
 class WeatherSearchPage extends StatelessWidget {
   @override
@@ -15,29 +22,26 @@ class WeatherSearchPage extends StatelessWidget {
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 16),
         alignment: Alignment.center,
-        child: BlocListener<WeatherBloc, WeatherState>(
-          listener: (context, state) {
-            if (state is WeatherError) {
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                ),
-              );
+        child: Consumer(
+          builder: (context, watch, child) {
+            final state = watch(weatherStateNotifierProvider.state);
+
+            if (state is WeatherLoading) {
+              return buildLoading();
+            } else if (state is WeatherLoaded) {
+              return buildColumnWithData(context, state.weather);
+            } else if (state is WeatherError) {
+              SchedulerBinding.instance.addPostFrameCallback((_) {
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text(
+                    (state.message),
+                  ),
+                ));
+              });
             }
+
+            return buildInitialInput();
           },
-          child: BlocBuilder<WeatherBloc, WeatherState>(
-            builder: (context, state) {
-              if (state is WeatherInitial) {
-                return buildInitialInput();
-              } else if (state is WeatherLoading) {
-                return buildLoading();
-              } else if (state is WeatherLoaded) {
-                return buildColumnWithData(context, state.weather);
-              } else if (state is WeatherError) {
-                return buildInitialInput();
-              }
-            },
-          ),
         ),
       ),
     );
@@ -77,12 +81,7 @@ class WeatherSearchPage extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) => BlocProvider.value(
-                  value: BlocProvider.of<WeatherBloc>(context),
-                  child: WeatherDetailPage(
-                    masterWeather: weather,
-                  ),
-                ),
+                builder: (_) => WeatherDetailPage(masterWeather: weather),
               ),
             );
           },
@@ -111,7 +110,6 @@ class CityInputField extends StatelessWidget {
   }
 
   void submitCityName(BuildContext context, String cityName) {
-    final weatherBloc = BlocProvider.of<WeatherBloc>(context);
-    weatherBloc.add(GetWeather(cityName));
+    context.read(weatherStateNotifierProvider).getWeather(cityName);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_bloc_v1_tutorial/bloc/bloc.dart';
+import 'package:flutter_bloc_v1_tutorial/notifiers/weather_state.dart';
+import 'package:flutter_bloc_v1_tutorial/pages/weather_search_page.dart';
+import 'package:flutter_riverpod/all.dart';
 
 import '../data/model/weather.dart';
 
@@ -19,9 +20,10 @@ class WeatherDetailPage extends StatefulWidget {
 class _WeatherDetailPageState extends State<WeatherDetailPage> {
   @override
   void didChangeDependencies() {
+    context
+        .read(weatherStateNotifierProvider)
+        .getDetailedWeather(widget.masterWeather.cityName);
     super.didChangeDependencies();
-    BlocProvider.of<WeatherBloc>(context)
-      ..add(GetDetailedWeather(widget.masterWeather.cityName));
   }
 
   @override
@@ -33,8 +35,11 @@ class _WeatherDetailPageState extends State<WeatherDetailPage> {
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 16),
         alignment: Alignment.center,
-        child: BlocBuilder<WeatherBloc, WeatherState>(
-          builder: (context, state) {
+        child: Consumer(
+          // ignore: missing_return
+          builder: (_, watch, child) {
+            final state = watch(weatherStateNotifierProvider.state);
+
             if (state is WeatherLoading) {
               return buildLoading();
             } else if (state is WeatherLoaded) {

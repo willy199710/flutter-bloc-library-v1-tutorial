@@ -1,32 +1,37 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_bloc_v1_tutorial/data/model/weather.dart';
+
+import '../data/model/weather.dart';
 
 abstract class WeatherState extends Equatable {
-  const WeatherState();
+  WeatherState();
 }
 
 class WeatherInitial extends WeatherState {
-  const WeatherInitial();
+  WeatherInitial();
+
   @override
   List<Object> get props => [];
 }
 
 class WeatherLoading extends WeatherState {
-  const WeatherLoading();
+  WeatherLoading();
+
   @override
   List<Object> get props => [];
 }
 
 class WeatherLoaded extends WeatherState {
   final Weather weather;
-  const WeatherLoaded(this.weather);
+  WeatherLoaded(this.weather);
+
   @override
   List<Object> get props => [weather];
 }
 
 class WeatherError extends WeatherState {
   final String message;
-  const WeatherError(this.message);
+  WeatherError(this.message);
+
   @override
   List<Object> get props => [message];
 }
