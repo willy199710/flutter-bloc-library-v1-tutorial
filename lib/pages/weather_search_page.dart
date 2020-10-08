@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc_v1_tutorial/data/model/weather.dart';
 import 'package:flutter_bloc_v1_tutorial/data/weather_repository.dart';
 import 'package:flutter_bloc_v1_tutorial/notifiers/weather_state.dart';
@@ -22,26 +21,33 @@ class WeatherSearchPage extends StatelessWidget {
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 16),
         alignment: Alignment.center,
-        child: Consumer(
-          builder: (context, watch, child) {
-            final state = watch(weatherStateNotifierProvider.state);
-
-            if (state is WeatherLoading) {
-              return buildLoading();
-            } else if (state is WeatherLoaded) {
-              return buildColumnWithData(context, state.weather);
-            } else if (state is WeatherError) {
-              SchedulerBinding.instance.addPostFrameCallback((_) {
-                Scaffold.of(context).showSnackBar(SnackBar(
-                  content: Text(
-                    (state.message),
-                  ),
-                ));
-              });
+        child: ProviderListener<WeatherState>(
+          provider: weatherStateNotifierProvider.state,
+          onChange: (context, state) {
+            if (state is WeatherError) {
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                ),
+              );
             }
-
-            return buildInitialInput();
           },
+          child: Consumer(
+            // ignore: missing_return
+            builder: (context, watch, child) {
+              final state = watch(weatherStateNotifierProvider.state);
+
+              if (state is WeatherInitial) {
+                return buildInitialInput();
+              } else if (state is WeatherLoading) {
+                return buildLoading();
+              } else if (state is WeatherLoaded) {
+                return buildColumnWithData(context, state.weather);
+              } else if (state is WeatherError) {
+                return buildInitialInput();
+              }
+            },
+          ),
         ),
       ),
     );
