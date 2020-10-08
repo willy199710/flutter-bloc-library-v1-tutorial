@@ -6,7 +6,9 @@ import 'weather_state.dart';
 class WeatherStateNotifier extends StateNotifier<WeatherState> {
   final WeatherRepository weatherRepository;
 
-  WeatherStateNotifier(this.weatherRepository) : super(WeatherInitial());
+  WeatherStateNotifier(ProviderReference ref)
+      : weatherRepository = ref.read(fakeWeatherRepositoryProvider),
+        super(WeatherInitial());
 
   void getWeather(String cityName) async {
     state = WeatherLoading();

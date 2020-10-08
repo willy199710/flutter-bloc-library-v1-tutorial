@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc_v1_tutorial/data/model/weather.dart';
-import 'package:flutter_bloc_v1_tutorial/data/weather_repository.dart';
 import 'package:flutter_bloc_v1_tutorial/notifiers/weather_state.dart';
 import 'package:flutter_bloc_v1_tutorial/notifiers/weather_state_notifier.dart';
 import 'package:flutter_riverpod/all.dart';
@@ -9,7 +8,7 @@ import 'weather_detail_page.dart';
 
 final weatherStateNotifierProvider =
     StateNotifierProvider<WeatherStateNotifier>(
-        (ref) => WeatherStateNotifier(FakeWeatherRepository()));
+        (ref) => WeatherStateNotifier(ref));
 
 class WeatherSearchPage extends StatelessWidget {
   @override

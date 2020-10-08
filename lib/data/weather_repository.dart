@@ -1,11 +1,16 @@
 import 'dart:math';
 
+import 'package:flutter_riverpod/all.dart';
+
 import 'model/weather.dart';
 
 abstract class WeatherRepository {
   Future<Weather> fetchWeather(String cityName);
   Future<Weather> fetchDetailedWeather(String cityName);
 }
+
+final fakeWeatherRepositoryProvider =
+    Provider<WeatherRepository>((ref) => FakeWeatherRepository());
 
 class FakeWeatherRepository implements WeatherRepository {
   double cachedTempCelsius;
