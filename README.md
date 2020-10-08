@@ -1,12 +1,3 @@
-# Flutter Bloc Library Tutorial (1.0.0 STABLE)
+# Flutter Weather App Riverpod example
 
-### Learn from :point_right: [this post](https://resocoder.com/flutter-bloc-v1) :point_left:.
-
-#### _Find more tutorials on [resocoder.com](https://resocoder.com)_
-
-<br />
-<br />
-
-[![Reso Coder](https://resocoder.com/wp-content/uploads/2019/09/logo_with_text_signature.png)](https://resocoder.com)
-<br />
-_Be prepared for **real** app development_
+### This project was a forked of Resocoder's Weather Bloc tutorial https://github.com/ResoCoder/flutter-bloc-library-v1-tutorial. This project was migrated from bloc to Riverpod. The state remains the same but the Bloc was changed to StateNotifier.
