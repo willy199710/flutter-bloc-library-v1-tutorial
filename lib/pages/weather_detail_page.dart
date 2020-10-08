@@ -19,11 +19,13 @@ class WeatherDetailPage extends StatefulWidget {
 
 class _WeatherDetailPageState extends State<WeatherDetailPage> {
   @override
-  void didChangeDependencies() {
-    context
-        .read(weatherStateNotifierProvider)
-        .getDetailedWeather(widget.masterWeather.cityName);
-    super.didChangeDependencies();
+  void initState() {
+    Future.delayed(
+        Duration.zero,
+        () => context
+            .read(weatherStateNotifierProvider)
+            .getDetailedWeather(widget.masterWeather.cityName));
+    super.initState();
   }
 
   @override
