@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:flutter_riverpod/all.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'model/weather.dart';
 
@@ -13,7 +13,7 @@ final fakeWeatherRepositoryProvider =
     Provider<WeatherRepository>((ref) => FakeWeatherRepository());
 
 class FakeWeatherRepository implements WeatherRepository {
-  double cachedTempCelsius;
+  double? cachedTempCelsius;
 
   @override
   Future<Weather> fetchWeather(String cityName) {
@@ -36,7 +36,7 @@ class FakeWeatherRepository implements WeatherRepository {
         return Weather(
           cityName: cityName,
           // Temperature between 20 and 35.99
-          temperatureCelsius: cachedTempCelsius,
+          temperatureCelsius: cachedTempCelsius!,
         );
       },
     );
@@ -50,8 +50,8 @@ class FakeWeatherRepository implements WeatherRepository {
       () {
         return Weather(
           cityName: cityName,
-          temperatureCelsius: cachedTempCelsius,
-          temperatureFahrenheit: cachedTempCelsius * 1.8 + 32,
+          temperatureCelsius: cachedTempCelsius!,
+          temperatureFahrenheit: cachedTempCelsius! * 1.8 + 32,
         );
       },
     );

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc_v1_tutorial/data/model/weather.dart';
-import 'package:flutter_bloc_v1_tutorial/notifiers/weather_state.dart';
-import 'package:flutter_bloc_v1_tutorial/notifiers/weather_state_notifier.dart';
-import 'package:flutter_riverpod/all.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/model/weather.dart';
+import '../notifiers/weather_state.dart';
+import '../notifiers/weather_state_notifier.dart';
 import 'weather_detail_page.dart';
 
 final weatherStateNotifierProvider =
-    StateNotifierProvider<WeatherStateNotifier>(
+    StateNotifierProvider<WeatherStateNotifier, WeatherState>(
         (ref) => WeatherStateNotifier(ref));
 
 class WeatherSearchPage extends StatelessWidget {
@@ -20,11 +20,11 @@ class WeatherSearchPage extends StatelessWidget {
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 16),
         alignment: Alignment.center,
-        child: ProviderListener<WeatherState>(
-          provider: weatherStateNotifierProvider.state,
+        child: ProviderListener(
+          provider: weatherStateNotifierProvider,
           onChange: (context, state) {
             if (state is WeatherError) {
-              Scaffold.of(context).showSnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
                 ),
@@ -32,9 +32,8 @@ class WeatherSearchPage extends StatelessWidget {
             }
           },
           child: Consumer(
-            // ignore: missing_return
             builder: (context, watch, child) {
-              final state = watch(weatherStateNotifierProvider.state);
+              final state = watch(weatherStateNotifierProvider);
 
               if (state is WeatherInitial) {
                 return buildInitialInput();
@@ -44,6 +43,8 @@ class WeatherSearchPage extends StatelessWidget {
                 return buildColumnWithData(context, state.weather);
               } else if (state is WeatherError) {
                 return buildInitialInput();
+              } else {
+                return SizedBox.shrink();
               }
             },
           ),
@@ -80,9 +81,11 @@ class WeatherSearchPage extends StatelessWidget {
           "${weather.temperatureCelsius.toStringAsFixed(1)} °C",
           style: TextStyle(fontSize: 80),
         ),
-        RaisedButton(
+        ElevatedButton(
           child: Text('See Details'),
-          color: Colors.lightBlue[100],
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.lightBlue[100]),
+          ),
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
@@ -115,6 +118,6 @@ class CityInputField extends StatelessWidget {
   }
 
   void submitCityName(BuildContext context, String cityName) {
-    context.read(weatherStateNotifierProvider).getWeather(cityName);
+    context.read(weatherStateNotifierProvider.notifier).getWeather(cityName);
   }
 }
