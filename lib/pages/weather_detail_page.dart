@@ -5,7 +5,7 @@ import '../data/model/weather.dart';
 import '../notifiers/weather_state.dart';
 import 'weather_search_page.dart';
 
-class WeatherDetailPage extends StatefulWidget {
+class WeatherDetailPage extends ConsumerStatefulWidget {
   final Weather masterWeather;
 
   const WeatherDetailPage({
@@ -17,12 +17,12 @@ class WeatherDetailPage extends StatefulWidget {
   _WeatherDetailPageState createState() => _WeatherDetailPageState();
 }
 
-class _WeatherDetailPageState extends State<WeatherDetailPage> {
+class _WeatherDetailPageState extends ConsumerState<WeatherDetailPage> {
   @override
   void initState() {
     Future.delayed(
         Duration.zero,
-        () => context
+        () => ref
             .read(weatherStateNotifierProvider.notifier)
             .getDetailedWeather(widget.masterWeather.cityName));
     super.initState();
@@ -39,7 +39,7 @@ class _WeatherDetailPageState extends State<WeatherDetailPage> {
         alignment: Alignment.center,
         child: Consumer(
           builder: (_, watch, child) {
-            final state = watch(weatherStateNotifierProvider);
+            final state = ref.watch(weatherStateNotifierProvider);
 
             if (state is WeatherLoading) {
               return buildLoading();
