@@ -2,15 +2,6 @@
 
 A new Flutter project.
 
-## Getting Started
+## 使用獲取天氣API獲取天氣資料並於APP上呈現
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Github]{"https://github.com/willy199710/flutter-bloc-library-v1-tutorial/blob/migrate-to-riverpod/pic/pic01.jpg"}
